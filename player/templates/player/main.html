@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+</head>
+<body>
+<p>Hello: {{ log }}</p>
+{% for music in musics %}
+{{ music }}
+{% endfor %}
+<h3>Add music</h3>
+<form action="" method="post" name="music">
+    {{ music_form }}
+    {% csrf_token %}
+    <input type="submit" name="add" value="ADD">
+</form>
+<p>You added title: {{ song.title }}</p>
+<p>Link: {{ song.link }}</p>
+<p>General: {{ song }}</p>
+<p>User name: {{ name }} your room is {{ room }} site - {{ site }}</p>
+<p>Info - {{ info }}</p>
+<p><a href="{% url 'player:player' %}">Go to home</a></p>
+</body>
+</html>
