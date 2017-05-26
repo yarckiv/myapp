@@ -1,0 +1,12 @@
+{% extends 'player/base-home.html' %}
+{% block content %}
+<table>
+    {% for music in allmusic %}
+        <tr>
+        <td>{{ music.title }}</td>
+            <td><a href="{{ music.link }}" target=_blank>{{ music.link }}</a></td>
+        <td>{{ music.author }}</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% load staticfiles %}
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Player</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href={% static 'css/core.css' %}>
+<link rel="stylesheet" href="{% static 'css/core-desktop.css' %}">
+<link rel="stylesheet" href="{% static 'css/core-1200px.css' %}">
+<link rel="stylesheet" href="{% static 'css/core-noscript.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/style-desktop.css' %}">
+</head>
+<body>
+<div id="wrapper">
+  <header id="header">
+    <div class="5grid-layout">
+        <div class="12u" id="logo">
+            <h1><a class="mobileUI-site-name">Player</a></h1>
+        </div>
+      </div>
+  </header>
+  <div id="page">
+    <div class="5grid-layout">
+      <div class="row">
+        <div class="3u" id="sidebar1">
+          <section>
+            <h2>MENU</h2>
+                <p><a href="{% url 'player:main' main="main" %}">Main</a></p>
+                <p><a href="{% url 'player:allmusic' %}">All music</a></p>
+                <p><a href="{% url 'player:addmusic' %}">Add music</a></p>
+                <p><a href="{% url 'player:logout' %}">Logout</a></p>
+          </section>
+        </div>
+        <div class="6u mobileUI-main-content">
+          <div id="content">
+            <section>
+              <div class="post">
+                {% block content %}
+                {% endblock %}
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="copyright" class="5grid-layout">
+</div>
+</body>
+</html>

@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../www/templates/synchronous/css/5grid/.idea/5grid.iml" filepath="$PROJECT_DIR$/../www/templates/synchronous/css/5grid/.idea/5grid.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/myapp.iml" filepath="$PROJECT_DIR$/.idea/myapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../python/.idea/python.iml" filepath="$PROJECT_DIR$/../python/.idea/python.iml" />
     </modules>
   </component>
 </project>

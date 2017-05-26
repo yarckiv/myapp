@@ -1,21 +1,14 @@
 from django.shortcuts import render
-from django.contrib.auth import login, authenticate, logout
-from django.utils import timezone
+from django.contrib.auth import login, authenticate
 from django.views.generic import ListView
 
-from .models import Room, Music, UserProfile
+from .models import Room, Music
 from .forms import UserCreationForm, RoomAdd, MusicFormAdd, LoginForm
-
-template = 'player/index.html'
-success_url = 'player/main.html'
-
-def logout(request):
-    logout(request)
-    return render(request, template)
 
 
 def index(request):
-    error_mes = 'User not exist'
+    template_name = 'player/index.html'
+    success_url = 'player/main.html'
     form_user = UserCreationForm()
     form_room = RoomAdd()
     form_login = LoginForm()
@@ -29,7 +22,9 @@ def index(request):
         if form_user.is_valid():
             user = form_user.cleaned_data
             form_user.save(user)
-            return render(request, success_url, {'user': user})
+            reg = authenticate(username=user['username'], password=user['password'])
+            login(request, reg)
+            return render(request, success_url)
     if 'login' in request.POST:
         form_login = LoginForm(request.POST)
         if form_login.is_valid():
@@ -37,27 +32,39 @@ def index(request):
             log = authenticate(username=log_info['username'], password=log_info['password'])
             if log is not None and log.is_active:
                 login(request, log)
-                return render(request, success_url, {'user': log_info, 'log': log})
-
-    return render(request, template, {'form_room': form_room, 'form_user': form_user, 'form_login': form_login})
-
-
-class Main(ListView):
-    model = Music
-    template_name = 'player/main.html'
-    context_object_name = 'musics'
+                return render(request, success_url)
+    return render(request, template_name, {'form_room': form_room, 'form_user': form_user, 'form_login': form_login})
 
 
-# def main(request, main):
-#     music_form = MusicFormAdd()
-#     # info = request.REQUEST
-#     if 'add' in request.POST:
-#         music_form = MusicFormAdd(request.POST)
-#         if music_form.is_valid():
-#             song = music_form.cleaned_data
-#             # w = Music (title=song['title'], link=song['link'], author=user, pub_date=timezone.now(), room=room)
-#             # w.save()
-#             return render(request, template, {'song': song})
+def main(request, main):
+    template_name = "player/main.html"
+    template = 'player/index.html'
+    if not request.user.is_authenticated:
+        return render(request, template)
+    else:
+        return render(request, template_name)
 
-    # return render(request, template, {'music_form': music_form})
 
+def addmusic(request):
+    template_name = 'player/add_music.html'
+    form = MusicFormAdd()
+    author = request.user
+    if 'add' in request.POST:
+        form = MusicFormAdd(request.POST)
+        if form.is_valid():
+            info = form.cleaned_data
+            title = info['title']
+            link = info['link']
+            message = "You successfully added song {0} from {1}".format(title, link)
+            music = Music(title=title, link=link, author=author, room=author.room)
+            music.save()
+            return render(request, template_name, {'message': message})
+    return render(request, template_name, {'form': form, "author": author})
+
+
+class allMusic(ListView):
+    context_object_name = 'allmusic'
+    template_name = 'player/allmusic.html'
+
+    def get_queryset(self):
+        return Music.objects.filter(room__number_room=str(self.request.user.room))

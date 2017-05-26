@@ -1,0 +1,10 @@
+{% extends 'player/base-home.html' %}
+{% block content %}
+<h2>Add music</h2>
+<form action="" method="post" name="music">
+    {{ form }}
+    {% csrf_token %}
+    <input type="submit" name="add" value="ADD">
+</form>
+{{ message }}
+{% endblock %}
