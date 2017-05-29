@@ -1,40 +1,49 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 
 from .models import Room, Music
 from .forms import UserCreationForm, RoomAdd, MusicFormAdd, LoginForm
 
 
-def index(request):
+class Index(TemplateView):
     template_name = 'player/index.html'
-    success_url = 'player/main.html'
     form_user = UserCreationForm()
     form_room = RoomAdd()
     form_login = LoginForm()
-    if 'room' in request.POST:
-        form_room = RoomAdd(request.POST)
-        if form_room.is_valid():
-            info = form_room.cleaned_data
-            Room.objects.create(number_room=info['room_num'])
-    if 'reg' in request.POST:
-        form_user = UserCreationForm(request.POST)
-        if form_user.is_valid():
-            user = form_user.cleaned_data
-            form_user.save(user)
-            reg = authenticate(username=user['username'], password=user['password'])
-            login(request, reg)
-            return render(request, success_url)
-    if 'login' in request.POST:
-        form_login = LoginForm(request.POST)
-        if form_login.is_valid():
-            log_info = form_login.cleaned_data
-            log = authenticate(username=log_info['username'], password=log_info['password'])
-            if log is not None and log.is_active:
-                login(request, log)
-                return render(request, success_url)
-    return render(request, template_name, {'form_room': form_room, 'form_user': form_user, 'form_login': form_login})
 
+    def get_context_data(self, **kwargs):
+        context = super(Index, self).get_context_data(**kwargs)
+        context = {'form_user': self.form_user, 'form_room': self.form_room, 'form_login': self.form_login}
+        return context
+
+
+def add_room(request):
+    form_room = RoomAdd(request.POST)
+    if form_room.is_valid():
+        info = form_room.cleaned_data
+        Room.objects.create(number_room=info['room_num'])
+        return redirect('/pl/')
+
+def registr_user(request):
+    form_user = UserCreationForm(request.POST)
+    if form_user.is_valid():
+        user = form_user.cleaned_data
+        form_user.save(user)
+        reg = authenticate(username=user['username'], password=user['password'])
+        login(request, reg)
+        return render(request, 'player/main.html')
+
+
+def login_user(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    log = authenticate(username=username, password=password)
+    if log is not None and log.is_active:
+        login(request, log)
+        return render(request, 'player/main.html')
+    else:
+        return render(request, 'player/index.html')
 
 def main(request, main):
     template_name = "player/main.html"
