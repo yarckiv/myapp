@@ -6,7 +6,7 @@ from . import views
 app_name = 'player'
 urlpatterns = [
     url(r'^$', views.Index.as_view(), name='player'),
-    url(r'^(?P<main>(main))/$', views.main, name='main'),
+    url(r'^(?P<main>(main))/$', views.Main.as_view(), name='main'),
     url(r'^registration/$', views.registr_user, name='registr'),
     url(r'^addroom/', views.add_room, name='add_room'),
     url(r'^login/$', views.login_user, name='login'),

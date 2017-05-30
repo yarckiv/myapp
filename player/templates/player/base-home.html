@@ -36,8 +36,12 @@
           <div id="content">
             <section>
               <div class="post">
-                {% block content %}
-                {% endblock %}
+                {% if user.is_authenticated %}
+                    {% block content %}
+                    {% endblock %}
+                {% else %}
+                  <p><a href="{% url 'player:player' %}">Please login</a></p>
+                {% endif %}
             </section>
           </div>
         </div>

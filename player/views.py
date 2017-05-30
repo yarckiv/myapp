@@ -25,6 +25,7 @@ def add_room(request):
         Room.objects.create(number_room=info['room_num'])
         return redirect('/pl/')
 
+
 def registr_user(request):
     form_user = UserCreationForm(request.POST)
     if form_user.is_valid():
@@ -45,13 +46,10 @@ def login_user(request):
     else:
         return render(request, 'player/index.html')
 
-def main(request, main):
+
+class Main(TemplateView):
     template_name = "player/main.html"
     template = 'player/index.html'
-    if not request.user.is_authenticated:
-        return render(request, template)
-    else:
-        return render(request, template_name)
 
 
 def addmusic(request):
