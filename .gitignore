@@ -48,3 +48,7 @@ Temporary Items
 db.wish
 /wish/
 /fblogin/
+
+.idea/
+*.pyc
+__pycache__
