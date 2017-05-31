@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from .models import Music, UserProfile
@@ -8,9 +9,21 @@ class LoginForm(forms.Form):
     username = forms.CharField(label='Username')
     password = forms.CharField(label='Password', widget=forms.PasswordInput())
 
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(LoginForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        log = authenticate(username=self.cleaned_data['username'], password=self.cleaned_data['password'])
+        if log is not None and log.is_active:
+            login(self.request, log)
+        else:
+            self.add_error('username', forms.ValidationError('Unknown user'))
+            return
+
 
 class RoomAdd(forms.Form):
-    room_num = forms.CharField(label='# room')
+    room_num = forms.IntegerField(label='# room')
 
 
 class MusicFormAdd(forms.ModelForm):

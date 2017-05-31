@@ -24,9 +24,17 @@
     <div class="5grid-layout">
       <div class="row">
         <div class="3u" id="sidebar1">
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             <section>
               <div class="post">
                 {% block content %}
+                    hey there
                 {% endblock %}
               </div>
             </section>

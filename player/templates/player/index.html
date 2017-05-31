@@ -1,21 +1,21 @@
 {% extends 'player/base.html' %}
 {% block content %}
 <p>Registration</p>
-<form action="{% url 'player:registr' %}" method="post" name="reg">
+<form action="" method="post">
     {{ form_user.as_p }}
     <input type="submit" value="registration" name="reg">
     {% csrf_token %}
 </form>
 
 <p>If you didn't find your room please add their:</p>
-<form action="{% url 'player:add_room' %}" method="post" name="room">
+<form action="" method="post">
     {{ form_room.as_p }}
     <input type="submit" value="Done" name="room">
     {% csrf_token %}
 </form>
 
 <p>Enter</p>
-<form action="{% url 'player:login' %}" method="post" name="login">
+<form action="" method="post">
     {{ form_login.as_p }}
     <input type="submit" value="login" name="login">
     {% csrf_token %}

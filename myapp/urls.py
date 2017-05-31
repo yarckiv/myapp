@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.views.generic import RedirectView
 
 urlpatterns = [
-    url(r'^wish/', include('wish.urls', namespace='wish')),
-    url(r'^fb/', include('fblogin.urls', namespace='fblogin')),
+    # url(r'^wish/', include('wish.urls', namespace='wish')),
+    # url(r'^fb/', include('fblogin.urls', namespace='fblogin')),
+    url('^$', RedirectView.as_view(pattern_name='player:player')),
     url(r'^pl/', include('player.urls', namespace='player')),
     url(r'^admin/', admin.site.urls),
 ]

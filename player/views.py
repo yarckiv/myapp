@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.views.generic import ListView, TemplateView
@@ -8,14 +9,36 @@ from .forms import UserCreationForm, RoomAdd, MusicFormAdd, LoginForm
 
 class Index(TemplateView):
     template_name = 'player/index.html'
-    form_user = UserCreationForm()
-    form_room = RoomAdd()
-    form_login = LoginForm()
 
-    def get_context_data(self, **kwargs):
-        context = super(Index, self).get_context_data(**kwargs)
-        context = {'form_user': self.form_user, 'form_room': self.form_room, 'form_login': self.form_login}
-        return context
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(
+            form_user=UserCreationForm(),
+            form_room=RoomAdd(),
+            form_login=LoginForm()
+        )
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        form_login = LoginForm(request.POST, request=request) if 'login' in request.POST else LoginForm()
+        form_login.is_valid()
+
+        form_user = UserCreationForm(request.POST) if 'reg' in request.POST else UserCreationForm()
+        if form_user.is_valid():
+            form_user.save()
+            messages.add_message(request, messages.INFO, 'User has been created')
+
+        form_room = RoomAdd(request.POST if 'room' in request.POST else None)
+        if form_room.is_valid():
+            Room.objects.create(number_room=form_room.cleaned_data['room_num'])
+            messages.add_message(request, messages.INFO, 'Room has been created')
+
+        context = self.get_context_data(
+            form_login=form_login,
+            form_user=form_user,
+            form_room=form_room
+        )
+
+        return self.render_to_response(context)
 
 
 def add_room(request):
@@ -23,7 +46,7 @@ def add_room(request):
     if form_room.is_valid():
         info = form_room.cleaned_data
         Room.objects.create(number_room=info['room_num'])
-        return redirect('/pl/')
+        return redirect('player:player')
 
 
 def registr_user(request):
